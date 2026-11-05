@@ -26,8 +26,8 @@ async def on_ready():
 
 async def main():
     async with bot:
-        await bot.load_extension("moderation")
-        await bot.load_extension("utils")
+        await bot.load_extension("cogs.moderation")
+        await bot.load_extension("cogs.utils")
         await bot.start(TOKEN)
 
 
