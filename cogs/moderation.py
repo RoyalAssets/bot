@@ -106,7 +106,7 @@ class Moderation(commands.Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.has_permissions(unban_members=True)
+    @commands.has_permissions(ban_members=True)
     async def unban(self, ctx, user: discord.User, *, reason="No reason provided"):
         await ctx.guild.unban(user, reason=f"{ctx.author}: {reason}")
 
@@ -155,7 +155,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
-    async def addrole(self, ctx, member: discord.Member, role: discord.Role):
+    async def r(self, ctx, member: discord.Member, role: discord.Role):
         if not await self.check_hierarchy(ctx, member):
             return
 
@@ -176,7 +176,7 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_roles=True)
-    async def removerole(self, ctx, member: discord.Member, role: discord.Role):
+    async def rr(self, ctx, member: discord.Member, role: discord.Role):
         if not await self.check_hierarchy(ctx, member):
             return
 
@@ -239,11 +239,11 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
-    async def lockdown(self, ctx):
+    async def lock(self, ctx):
         await ctx.channel.set_permissions(
             ctx.guild.default_role,
             send_messages=False,
-            reason=f"Lockdown by {ctx.author}"
+            reason=f"Locked by {ctx.author}"
         )
 
         await ctx.send(embed=self.embed(
@@ -255,11 +255,11 @@ class Moderation(commands.Cog):
     @commands.command()
     @commands.guild_only()
     @commands.has_permissions(manage_channels=True)
-    async def unlockdown(self, ctx):
+    async def unlock(self, ctx):
         await ctx.channel.set_permissions(
             ctx.guild.default_role,
             send_messages=None,
-            reason=f"Unlockdown by {ctx.author}"
+            reason=f"Unlocked by {ctx.author}"
         )
 
         await ctx.send(embed=self.embed(

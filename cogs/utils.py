@@ -27,33 +27,6 @@ class Utils(commands.Cog):
         await ctx.channel.purge(limit=amount)
 
     @commands.command()
-    @commands.has_permissions(manage_messages=True)
-    async def slowmode(self, ctx, seconds: int):
-        if not 0 <= seconds <= 21600:
-            return await ctx.send("Slowmode must be between 0 and 21600 seconds.")
-
-        await ctx.channel.edit(slowmode_delay=seconds)
-        await ctx.send(f"Set slowmode to {seconds} seconds.")
-
-    @commands.command()
-    @commands.has_permissions(manage_messages=True)
-    async def lock(self, ctx):
-        await ctx.channel.set_permissions(
-            ctx.guild.default_role,
-            send_messages=False
-        )
-        await ctx.send("Channel locked.")
-
-    @commands.command()
-    @commands.has_permissions(manage_messages=True)
-    async def unlock(self, ctx):
-        await ctx.channel.set_permissions(
-            ctx.guild.default_role,
-            send_messages=True
-        )
-        await ctx.send("Channel unlocked.")
-
-    @commands.command()
     @commands.has_permissions(manage_channels=True)
     async def renamechannel(self, ctx, *, new_name):
         await ctx.channel.edit(name=new_name)
