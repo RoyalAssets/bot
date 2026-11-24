@@ -1,4 +1,5 @@
 import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 class Database:
  def __init__(self,path="data/bot.sqlite3"):
@@ -6,8 +7,16 @@ class Database:
   with self.connect() as c:
    c.execute("PRAGMA journal_mode=WAL")
    c.executescript("""CREATE TABLE IF NOT EXISTS warnings(id INTEGER PRIMARY KEY,guild TEXT,user TEXT,reason TEXT,moderator TEXT,moderator_name TEXT,created TEXT); CREATE INDEX IF NOT EXISTS warning_lookup ON warnings(guild,user,id); CREATE TABLE IF NOT EXISTS voice_config(guild TEXT PRIMARY KEY,category TEXT,join_channel TEXT,controls TEXT); CREATE TABLE IF NOT EXISTS voice_owner(channel TEXT PRIMARY KEY,guild TEXT,owner TEXT);""")
+ @contextmanager
  def connect(self):
-  c=sqlite3.connect(self.path,timeout=10); c.row_factory=sqlite3.Row; return c
+  c=sqlite3.connect(self.path,timeout=10); c.row_factory=sqlite3.Row
+  try:
+   yield c
+   c.commit()
+  except Exception:
+   c.rollback(); raise
+  finally:
+   c.close()
  def add_warning(self,g,u,r,m,mn,t):
   with self.connect() as c: c.execute("INSERT INTO warnings(guild,user,reason,moderator,moderator_name,created) VALUES(?,?,?,?,?,?)",(str(g),str(u),r,str(m),mn,t))
  def warnings(self,g,u):
